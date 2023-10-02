@@ -1,5 +1,6 @@
 import React from 'react';
 
+// ToDo component
 function TodoList() {
   const todoList = [
     { id: 1, title: "Complete assignment 1" },
@@ -16,13 +17,14 @@ function TodoList() {
   );
 }
 
+// App component
 function App() {
   return (
     <div>
       <header>
         <h1>Todo List</h1>
       </header>
-      <TodoList /> {}
+      <TodoList />
     </div>
   );
 }
