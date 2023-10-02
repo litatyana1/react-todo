@@ -24,7 +24,7 @@ function App() {
       <header>
         <h1>Todo List</h1>
       </header>
-      <TodoList /> {}
+      <TodoList />
     </div>
   );
 }
