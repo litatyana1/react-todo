@@ -4,7 +4,7 @@ function AddTodoForm(props) {
   
   function handleAddTodo(event) {
     event.preventDefault();  
-    const todoTitle = event.target.elements.title.value; 
+    const todoTitle = event.target.title.value; 
     props.onAddTodo(todoTitle); 
     event.target.reset(); 
   }
