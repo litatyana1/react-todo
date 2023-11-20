@@ -1,14 +1,12 @@
 import React from 'react';
 import TodoListItem from './TodoListItem';
 
-function TodoList({ todoList }) { // Destructuring for props
-  return (
-    <ul>
-      {todoList.map((todo) => (
-        <TodoListItem key={todo.id} todo={todo} />
-      ))}
-    </ul>
-  );
-}
+const TodoList = ({ todoList, onRemoveTodo }) => (
+  <ul>
+    {todoList.map((todo) => (
+      <TodoListItem key={todo.id} todo={todo} onRemoveTodo={onRemoveTodo} />
+    ))}
+  </ul>
+);
 
 export default TodoList;
