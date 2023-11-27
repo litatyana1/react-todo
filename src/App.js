@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TodoList from './TodoList';
 import AddTodoForm from './AddTodoForm';
 
-function App() {
+const App = () => {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,7 +17,7 @@ function App() {
 
     fetchData().then((result) => {
       setTodoList(result.data.todoList);
-      setIsLoading(false);
+      setIsLoading(false); // Set loading to false when data fetching is complete
     });
   }, []);
 
@@ -27,14 +27,14 @@ function App() {
     }
   }, [todoList, isLoading]);
 
-  function addTodo(newTodo) {
+  const addTodo = (newTodo) => {
     setTodoList([...todoList, newTodo]);
-  }
+  };
 
-  function removeTodo(id) {
+  const removeTodo = (id) => {
     const updatedTodoList = todoList.filter((todo) => todo.id !== id);
     setTodoList(updatedTodoList);
-  }
+  };
 
   return (
     <>
@@ -44,12 +44,13 @@ function App() {
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+        <>
+          <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+          <AddTodoForm onAddTodo={addTodo} />
+        </>
       )}
-      <AddTodoForm onAddTodo={addTodo} />
     </>
   );
-}
+};
 
 export default App;
-
