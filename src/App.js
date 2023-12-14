@@ -1,40 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import TodoList from './TodoList';
-import AddTodoForm from './AddTodoForm';
+import { useState, useEffect } from "react";
+import TodoList from "./TodoList";
+import AddTodoForm from "./AddTodoForm";
+// import InputWithLabel from './InputWithLabel';
 
-const App = () => {
+function App() {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = () => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({ data: { todoList: [] } });
-        }, 2000);
-      });
-    };
+  const fetchData = async () => {
+    try {
+      const options = {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
+        },
+      };
 
-    fetchData().then((result) => {
-      setTodoList(result.data.todoList);
-      setIsLoading(false); // Set loading to false when data fetching is complete
-    });
+      const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`;
+
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      const todos = data.records.map((record) => ({
+        title: record.fields.title,
+        id: record.id,
+      }));
+
+      setTodoList(todos);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   useEffect(() => {
     if (!isLoading) {
-      localStorage.setItem('savedTodoList', JSON.stringify(todoList));
+      localStorage.setItem("savedTodoList", JSON.stringify(todoList));
     }
   }, [todoList, isLoading]);
 
-  const addTodo = (newTodo) => {
+  function addTodo(newTodo) {
     setTodoList([...todoList, newTodo]);
-  };
+  }
 
-  const removeTodo = (id) => {
+  function removeTodo(id) {
     const updatedTodoList = todoList.filter((todo) => todo.id !== id);
     setTodoList(updatedTodoList);
-  };
+  }
 
   return (
     <>
@@ -51,6 +72,6 @@ const App = () => {
       )}
     </>
   );
-};
+}
 
 export default App;
