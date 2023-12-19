@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const AddTodoForm = ({ onAddTodo }) => {
   const [todoTitle, setTodoTitle] = useState('');
+
+  const handleInputChange = (event) => {
+    setTodoTitle(event.target.value);
+  };
 
   const handleAddTodo = (event) => {
     event.preventDefault();
@@ -18,7 +22,7 @@ const AddTodoForm = ({ onAddTodo }) => {
         id="todoTitle"
         name="title"
         value={todoTitle}
-        onChange={(event) => setTodoTitle(event.target.value)}
+        onChange={handleInputChange}
       />
       <button type="submit">Add</button>
     </form>
