@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
-import TodoList from "./TodoList";
-import AddTodoForm from "./AddTodoForm";
-// import InputWithLabel from './InputWithLabel';
+import React, { useState, useEffect } from 'react';
+import TodoList from './TodoList';
+import AddTodoForm from './AddTodoForm';
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -10,7 +9,7 @@ function App() {
   const fetchData = async () => {
     try {
       const options = {
-        method: "GET",
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
         },
@@ -38,24 +37,50 @@ function App() {
     }
   };
 
+  const addTodo = async (newTodo) => {
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
+        },
+        body: JSON.stringify({
+          fields: {
+            title: newTodo.title,
+          },
+        }),
+      };
+
+      const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`;
+
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const addedTodo = await response.json();
+      setTodoList((prevTodos) => [...prevTodos, { id: addedTodo.id, title: addedTodo.fields.title }]);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
     if (!isLoading) {
-      localStorage.setItem("savedTodoList", JSON.stringify(todoList));
+      localStorage.setItem('savedTodoList', JSON.stringify(todoList));
     }
   }, [todoList, isLoading]);
 
-  function addTodo(newTodo) {
-    setTodoList([...todoList, newTodo]);
-  }
-
-  function removeTodo(id) {
+  const removeTodo = (id) => {
     const updatedTodoList = todoList.filter((todo) => todo.id !== id);
     setTodoList(updatedTodoList);
-  }
+  };
 
   return (
     <>
